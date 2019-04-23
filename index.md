@@ -10,6 +10,7 @@ We explore earthquake data from USGS from 1980 to April 23, 2019 inside the regi
 *This is a work in progress.*
 
 <details>
+<p>
   
 ```python
 import numpy as np

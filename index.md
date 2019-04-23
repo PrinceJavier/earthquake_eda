@@ -10,8 +10,6 @@ We explore earthquake data from USGS from 1980 to April 23, 2019 inside the regi
 *This is a work in progress.*
 
 <details>
-<summary> Hey </summary>
-<p>
 ```python
 import numpy as np
 import pandas as pd
@@ -24,7 +22,6 @@ import datetime as dt
 import warnings
 warnings.filterwarnings("ignore")
 ```
-</details>
 
 ```python
 eq = pd.read_csv("data_other/earthquakes_1980_onwards.csv")
@@ -52,6 +49,8 @@ eq["date"] = eq["time"] + dt.timedelta(hours=8)
 eq["text"] = [f"mag: {mag}<br>depth: {depth}<br>date: {date.date()}" for mag,
               depth, date in zip(eq.mag, eq.depth, eq.date)]
 ```
+</details>
+
 ## Spatial Distribution of Earthquakes in Ph
   
 ```python

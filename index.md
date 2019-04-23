@@ -55,6 +55,7 @@ eq["text"] = [f"mag: {mag}<br>depth: {depth}<br>date: {date.date()}" for mag,
 ## Spatial Distribution of Earthquakes in Ph
   
 <details>
+  
 ```python
 # Create a trace
 data = go.Scattergeo(

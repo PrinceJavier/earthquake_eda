@@ -9,6 +9,19 @@ We explore earthquake data from USGS from 1980 to April 23, 2019 inside the regi
 
 *This is a work in progress.*
 
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.plotly as py
+import plotly.graph_objs as go
+import datetime as dt
+
+import warnings
+warnings.filterwarnings("ignore")
+```
+
 <details>
 <p>
   

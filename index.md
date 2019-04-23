@@ -51,11 +51,14 @@ eq["date"] = eq["time"] + dt.timedelta(hours=8)
 eq["text"] = [f"mag: {mag}<br>depth: {depth}<br>date: {date.date()}" for mag,
               depth, date in zip(eq.mag, eq.depth, eq.date)]
 ```
+
+</p>
 </details>
 
 ## Spatial Distribution of Earthquakes in Ph
   
 <details>
+<p>
   
 ```python
 # Create a trace
@@ -111,6 +114,7 @@ fig = go.Figure(layout=layout, data=data)
 py.iplot(fig, filename='eq_geoscatter')
 ```
 
+</p>
 </details>
 
 <iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~pjavier/16.embed" height="800px" width="700px"></iframe>
@@ -120,7 +124,8 @@ py.iplot(fig, filename='eq_geoscatter')
 
 
 <details>
-
+<p>
+  
 ```python
 mags = eq.mag.value_counts()
 x = mags.keys()
@@ -147,6 +152,8 @@ data = [data]
 fig = dict(data=data, layout=layout)
 py.iplot(fig, filename='eq_distribution_mag')
 ```
+
+</p>
 </details>
 
 
@@ -159,7 +166,8 @@ py.iplot(fig, filename='eq_distribution_mag')
 
 
 <details>
-
+<p>
+  
 ```python
 # @hidden_cell
 from collections import Counter
@@ -216,6 +224,7 @@ fig = dict(data=data, layout=layout)
 py.iplot(fig, filename='eq_distribution_time')
 ```
 
+</p>
 </details>
 
 

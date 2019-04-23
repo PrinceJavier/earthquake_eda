@@ -9,6 +9,8 @@ We explore earthquake data from USGS from 1980 to April 23, 2019 inside the regi
 
 *This is a work in progress.*
 
+<details>
+<summary> Hey </summary>
 ```python
 import numpy as np
 import pandas as pd
@@ -21,6 +23,7 @@ import datetime as dt
 import warnings
 warnings.filterwarnings("ignore")
 ```
+</details>
 
 ```python
 eq = pd.read_csv("data_other/earthquakes_1980_onwards.csv")

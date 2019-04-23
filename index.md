@@ -54,6 +54,7 @@ eq["text"] = [f"mag: {mag}<br>depth: {depth}<br>date: {date.date()}" for mag,
 
 ## Spatial Distribution of Earthquakes in Ph
   
+<details>
 ```python
 # Create a trace
 data = go.Scattergeo(
@@ -108,11 +109,15 @@ fig = go.Figure(layout=layout, data=data)
 py.iplot(fig, filename='eq_geoscatter')
 ```
 
+</details>
+
 <iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~pjavier/16.embed" height="800px" width="700px"></iframe>
 
 
 ## Distribution of Magnitudes
 
+
+<details>
 
 ```python
 mags = eq.mag.value_counts()
@@ -140,7 +145,7 @@ data = [data]
 fig = dict(data=data, layout=layout)
 py.iplot(fig, filename='eq_distribution_mag')
 ```
-
+</details>
 
 
 
@@ -150,6 +155,8 @@ py.iplot(fig, filename='eq_distribution_mag')
 
 ## Distribution of Time between Consecutive Earthquakes
 
+
+<details>
 
 ```python
 # @hidden_cell
@@ -207,34 +214,10 @@ fig = dict(data=data, layout=layout)
 py.iplot(fig, filename='eq_distribution_time')
 ```
 
-
+</details>
 
 
 <iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="https://plot.ly/~pjavier/20.embed" height="400px" width="800px"></iframe>
-
-
-
-
-```python
-# REMOVING CODE FROM NOTEBOOK
-
-from IPython.display import HTML
-
-HTML('''<script>
-code_show=true; 
-function code_toggle() {
- if (code_show){
- $('div.input').hide();
- } else {
- $('div.input').show();
- }
- code_show = !code_show
-} 
-$( document ).ready(code_toggle);
-</script>
-The raw code for this IPython notebook is by default hidden for easier reading.
-To toggle on/off the raw code, click <a href="javascript:code_toggle()">here</a>.''')
-```
 
 
 

@@ -25,45 +25,45 @@ warnings.filterwarnings("ignore")
 <details>
 <p>
   
-```python
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-import plotly.plotly as py
-import plotly.graph_objs as go
-import datetime as dt
+  ```python
+  import numpy as np
+  import pandas as pd
+  import matplotlib.pyplot as plt
+  import seaborn as sns
+  import plotly.plotly as py
+  import plotly.graph_objs as go
+  import datetime as dt
 
-import warnings
-warnings.filterwarnings("ignore")
-```
+  import warnings
+  warnings.filterwarnings("ignore")
+  ```
 
-```python
-eq = pd.read_csv("data_other/earthquakes_1980_onwards.csv")
-```
-
-
-```python
-eq["depth"] = eq["depth"] * -1
-```
+  ```python
+  eq = pd.read_csv("data_other/earthquakes_1980_onwards.csv")
+  ```
 
 
-```python
-eq["time"] = pd.to_datetime(eq["time"])
-```
+  ```python
+  eq["depth"] = eq["depth"] * -1
+  ```
 
 
-```python
-## convert to GMT + 8
-eq["date"] = eq["time"] + dt.timedelta(hours=8)
-```
+  ```python
+  eq["time"] = pd.to_datetime(eq["time"])
+  ```
 
 
-```python
-# text
-eq["text"] = [f"mag: {mag}<br>depth: {depth}<br>date: {date.date()}" for mag,
-              depth, date in zip(eq.mag, eq.depth, eq.date)]
-```
+  ```python
+  ## convert to GMT + 8
+  eq["date"] = eq["time"] + dt.timedelta(hours=8)
+  ```
+
+
+  ```python
+  # text
+  eq["text"] = [f"mag: {mag}<br>depth: {depth}<br>date: {date.date()}" for mag,
+                depth, date in zip(eq.mag, eq.depth, eq.date)]
+  ```
 
 </p>
 </details>

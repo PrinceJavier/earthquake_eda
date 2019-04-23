@@ -1,37 +1,234 @@
-## Welcome to GitHub Pages
 
-You can use the [editor on GitHub](https://github.com/PrinceJavier/earthquake_eda/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
+# coding: utf-8
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+# # Philippine Earthquakes EDA
+# 
+# by Prince Javier
 
-### Markdown
+# We explore earthquake data from USGS from 1980 to April 23, 2019 inside the region bounded by:
+# <br>Latitude: (4.442, 19.692)
+# <br>Longitude: (115.664, 129.727)
+# 
+# *This is a work in progress.*
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+# In[1]:
 
-```markdown
-Syntax highlighted code block
 
-# Header 1
-## Header 2
-### Header 3
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.plotly as py
+import plotly.graph_objs as go
+import datetime as dt
 
-- Bulleted
-- List
+import warnings
+warnings.filterwarnings("ignore")
 
-1. Numbered
-2. List
 
-**Bold** and _Italic_ and `Code` text
+# In[2]:
 
-[Link](url) and ![Image](src)
-```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+eq = pd.read_csv("data_other/earthquakes_1980_onwards.csv")
 
-### Jekyll Themes
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/PrinceJavier/earthquake_eda/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+# In[3]:
 
-### Support or Contact
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+eq["depth"] = eq["depth"] * -1
+
+
+# In[4]:
+
+
+eq["time"] = pd.to_datetime(eq["time"])
+
+
+# In[5]:
+
+
+## convert to GMT + 8
+eq["date"] = eq["time"] + dt.timedelta(hours=8)
+
+
+# In[6]:
+
+
+# text
+eq["text"] = [f"mag: {mag}<br>depth: {depth}<br>date: {date.date()}" for mag,
+              depth, date in zip(eq.mag, eq.depth, eq.date)]
+
+
+# ## Spatial Distribution of Earthquakes in Ph
+
+# In[7]:
+
+
+# Create a trace
+data = go.Scattergeo(
+    lon=eq.longitude,
+    lat=eq.latitude,
+    text=eq.text,
+    marker=go.scattergeo.Marker(
+        color=eq.depth,
+        size=2 ** eq.mag/10,
+        colorscale="Jet",
+        colorbar=dict(thickness=10, title="Depth")),
+)
+
+layout = go.Layout(
+    title=go.layout.Title(
+        text='Earthquake in the Ph from 1980 to April 23, 2019'),
+
+    width=700,
+    height=800,
+    showlegend=False,
+
+    geo=go.layout.Geo(
+        resolution=50,
+        scope='asia',
+        showframe=False,
+        showcoastlines=True,
+        showland=True,
+        landcolor="rgb(229, 229, 229)",
+        countrycolor="rgb(255, 255, 255)",
+        coastlinecolor="rgb(255, 255, 255)",
+        projection=go.layout.geo.Projection(
+            type='mercator'
+        ),
+        lonaxis=go.layout.geo.Lonaxis(
+            range=[116.0, 129.0]
+        ),
+        lataxis=go.layout.geo.Lataxis(
+            range=[5, 20]
+        ),
+        domain=go.layout.geo.Domain(
+            x=[0, 1],
+            y=[0, 1]
+        )
+    ),
+    legend=go.layout.Legend(
+        traceorder='reversed'
+    )
+)
+
+data = [data]
+fig = go.Figure(layout=layout, data=data)
+py.iplot(fig, filename='eq_geoscatter')
+
+
+# ## Distribution of Magnitudes
+
+# In[8]:
+
+
+mags = eq.mag.value_counts()
+x = mags.keys()
+inds = np.argsort(x)
+x = x[inds]
+y = mags.values[inds]
+
+# Create a trace
+data = go.Scatter(
+    x=x,
+    y=y
+)
+
+# Edit the layout
+layout = dict(title='Histogram of Earthquake Magnitudes Around Ph',
+              xaxis=dict(title='Magnitude'),
+              yaxis=dict(title='Counts'),
+              width=800,
+              height=400
+              )
+
+data = [data]
+
+fig = dict(data=data, layout=layout)
+py.iplot(fig, filename='eq_distribution_mag')
+
+
+# ## Distribution of Time between Consecutive Earthquakes
+
+# In[9]:
+
+
+# @hidden_cell
+from collections import Counter
+
+
+# In[10]:
+
+
+eq = eq.sort_values("time")
+
+
+# In[11]:
+
+
+data = []
+
+eq_ranges = [(2.5, 5), (5, 9)]
+
+for i in range(len(eq_ranges)):
+    min_, max_ = eq_ranges[i]
+    eq_filtered = eq[np.logical_and(eq.mag >= min_, eq.mag <= max_)]
+
+    eq_filtered["time_gap"] = [0] + [t2 - t1 for t1,
+                                     t2 in zip(eq_filtered.time[:-1], eq_filtered.time[1:])]
+
+    # get hour gaps
+    hour_gaps = [0] + [i.days * 24 for i in eq_filtered.time_gap.values[1:]]
+    hour_gaps = Counter(hour_gaps)
+
+    x = np.array(list(hour_gaps.keys()))
+    inds = np.argsort(x)
+    x = x[inds]
+    y = np.array(list(hour_gaps.values()))[inds]
+    y = np.log(y)
+
+    # Create a trace
+    trace = go.Scatter(
+        name=str(eq_ranges[i]),
+        x=x,
+        y=y
+    )
+
+    data.append(trace)
+
+# Edit the layout
+layout = dict(title='Distribution of Gaps Between Earthquakes for Different Magnitude Ranges',
+              xaxis=dict(title='Hours gap between consecutive earthquakes',
+                         range=[0, 1200]),
+              yaxis=dict(title='Natural Logarithm of Frequency'),
+              width=800,
+              height=400
+              )
+
+
+fig = dict(data=data, layout=layout)
+py.iplot(fig, filename='eq_distribution_time')
+
+
+# In[12]:
+
+
+# REMOVING CODE FROM NOTEBOOK
+
+from IPython.display import HTML
+
+HTML('''<script>
+code_show=true; 
+function code_toggle() {
+ if (code_show){
+ $('div.input').hide();
+ } else {
+ $('div.input').show();
+ }
+ code_show = !code_show
+} 
+$( document ).ready(code_toggle);
+</script>
+The raw code for this IPython notebook is by default hidden for easier reading.
+To toggle on/off the raw code, click <a href="javascript:code_toggle()">here</a>.''')
+
